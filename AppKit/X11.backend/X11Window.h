@@ -75,6 +75,7 @@
 }
 
 + (void) removeDecorationForWindow: (Window) w onDisplay: (Display *) dpy;
+- (void) beginWindowMove;
 - (instancetype) initWithDelegate: (NSWindow *) delegate;
 - (O2Rect) frame;
 - (Visual *) visual;

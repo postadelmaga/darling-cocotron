@@ -1312,6 +1312,15 @@ static BOOL _allowsAutomaticWindowTabbing;
     _displaysWhenScreenProfileChanges = value;
 }
 
+// Hands an interactive move of the window to the window system, as for a drag of a
+// client-drawn title bar. The platform window does it if it can (X11: the window
+// manager, through _NET_WM_MOVERESIZE); otherwise this is a no-op.
+- (void) performWindowDragWithEvent: (NSEvent *) event {
+    CGWindow *platformWindow = [self platformWindow];
+    if ([platformWindow respondsToSelector: @selector(beginWindowMove)])
+        [platformWindow performSelector: @selector(beginWindowMove)];
+}
+
 - (void) setMovableByWindowBackground: (BOOL) value {
     _isMovableByWindowBackground = value;
 }

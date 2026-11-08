@@ -575,6 +575,35 @@ static NSData *makeWindowIcon() {
     _styleMask = mask;
 }
 
+// Interactive move driven by the window manager (EWMH _NET_WM_MOVERESIZE), started
+// from the pointer's current position while the left button is held.
+- (void) beginWindowMove {
+    Window root, child;
+    int rootX, rootY, winX, winY;
+    unsigned int mask;
+    if (!XQueryPointer(_display, _window, &root, &child, &rootX, &rootY, &winX,
+                       &winY, &mask))
+        return;
+    // The button press gave us an implicit pointer grab: the WM needs it.
+    XUngrabPointer(_display, CurrentTime);
+
+    XEvent event;
+    memset(&event, 0, sizeof(event));
+    event.xclient.type = ClientMessage;
+    event.xclient.window = _window;
+    event.xclient.message_type =
+            XInternAtom(_display, "_NET_WM_MOVERESIZE", False);
+    event.xclient.format = 32;
+    event.xclient.data.l[0] = rootX;
+    event.xclient.data.l[1] = rootY;
+    event.xclient.data.l[2] = 8; // _NET_WM_MOVERESIZE_MOVE
+    event.xclient.data.l[3] = Button1;
+    event.xclient.data.l[4] = 1; // source: normal application
+    XSendEvent(_display, root, False,
+               SubstructureRedirectMask | SubstructureNotifyMask, &event);
+    XFlush(_display);
+}
+
 + (void) removeDecorationForWindow: (Window) w onDisplay: (Display *) dpy {
     struct {
         unsigned long flags;

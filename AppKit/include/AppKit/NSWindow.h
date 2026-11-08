@@ -409,6 +409,7 @@ APPKIT_EXPORT const NSNotificationName NSWindowDidExposeNotification;
 - (void) setDepthLimit: (NSWindowDepth) value;
 - (void) setDisplaysWhenScreenProfileChanges: (BOOL) value;
 - (void) setMovableByWindowBackground: (BOOL) value;
+- (void) performWindowDragWithEvent: (NSEvent *) event;
 - (void) setAllowsToolTipsWhenApplicationIsInactive: (BOOL) value;
 
 - (BOOL) setFrameUsingName: (NSString *) name;
